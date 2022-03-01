@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 15:41:39 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/03/01 18:58:37 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/03/01 19:50:51 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,13 @@
 
 typedef struct s_work
 {
+	unsigned long long time2;
 	int	right_fork;
 	int	left_fork;
 	unsigned long long last_eat;
 	int	nbr_of_eat;
 	int	eating;
+	struct s_global	*globalback;
 	pthread_mutex_t	eat;
 }	t_work;
 

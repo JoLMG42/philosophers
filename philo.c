@@ -6,11 +6,13 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 15:30:29 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/03/01 19:04:52 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/03/01 19:51:53 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	ft_print_philo(char *str, t_work *work);
 
 unsigned long long ft_get_time(void)
 {
@@ -89,10 +91,11 @@ void	*ft_routine(void *philo_work)
 {
 	t_work *work;
 
-	work = philo_work;
-	ft_eat(work);
-	ft_sleep(work);
-	ft_think(work);
+	work = (t_work *)philo_work;
+	//ft_eat(work);
+	//ft_sleep(work);
+	//ft_think(work);
+	ft_print_philo("test", work);
 }
 
 void	ft_init_mutex(t_global *global)
@@ -123,6 +126,17 @@ void	ft_init_thread(t_global *global)
 		i++;
 	}
 }
+
+void	ft_print_philo(char *str, t_work *work)
+{
+	unsigned long long t;
+
+	(void)str;
+	//pthread_mutex_lock(&work->globalback->write);
+	//t = ft_get_time() - work->globalback->time;
+	printf("test = %llu", t);
+}
+
 
 int	main(int ac, char **av)
 {
