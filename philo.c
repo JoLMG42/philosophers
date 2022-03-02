@@ -5,25 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/24 15:30:29 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/03/01 19:51:53 by jtaravel         ###   ########.fr       */
+/*   Created: 2022/03/02 15:27:43 by jtaravel          #+#    #+#             */
+/*   Updated: 2022/03/02 18:20:53 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	ft_print_philo(char *str, t_work *work);
-
-unsigned long long ft_get_time(void)
-{
-	struct	timeval time;
-	unsigned long long ms;
-
-	gettimeofday(&time, NULL);
-	ms = (time.tv_sec * 1000) + (time.tv_usec / 1000);
-	return (ms);
-}
-
 
 int	ft_strlen(char *str)
 {
@@ -54,61 +41,125 @@ int	 ft_check_args(int ac, char **av)
 	return (1);
 }
 
-t_work	*ft_init_struct_2(t_global *global)
+unsigned long long ft_get_time(void)
 {
-	t_work	*all;
+	struct	timeval time;
+	unsigned long long ms;
+
+	gettimeofday(&time, NULL);
+	ms = (time.tv_sec * 1000) + (time.tv_usec / 1000);
+	return (ms);
+}
+
+void    ft_init_mutex(t_global *global)
+{
+        int     i;
+
+        i = 0;
+        global->forks = malloc(sizeof(pthread_mutex_t) * (global->n_philo));
+        if (!global->forks)
+                return ;
+        while (i < global->n_philo)
+        {
+                pthread_mutex_init(&global->forks[i], NULL);
+                i++;
+        }
+}
+
+t_manage	*ft_init_struct_2(t_global *global)
+{
+	t_manage *manage;
 	int	i;
 
 	i = 0;
-	all = malloc(sizeof(t_work *) * global->philo);
-	while (i < global->philo)
+	manage = malloc(sizeof(t_manage) * global->n_philo);
+	while (i < global->n_philo)
 	{
-		all[i].left_fork = i;
-		all[i].right_fork = (i + 1) % global->philo;
-		all[i].eating = 0;
-		all[i].nbr_of_eat = 0;
-		pthread_mutex_init(&all[i].eat, NULL);
+		manage[i].philo_place = i + 1;
+		manage[i].left_fork = i;
+		manage[i].right_fork = (i + 1) % global->n_philo;
+		manage[i].eating = 0;
+		manage[i].nbr_of_eat = 0;
+		pthread_mutex_init(&manage[i].eat, NULL);
+		manage[i].global_back = global;
 		i++;
 	}
-	return (all);
+	return (manage);
 }
-
 
 
 void	ft_init_struct(t_global *global, char **av, int ac)
 {
-	global->philo = ft_atoi(av[1]);
+	global->n_philo = ft_atoi(av[1]);
 	global->tdeath = ft_atoi(av[2]);
 	global->teat = ft_atoi(av[3]);
 	global->tsleep = ft_atoi(av[4]);
 	if (ac == 6)
 		global->each_time_eat = ft_atoi(av[5]);
-	global->philo_work = ft_init_struct_2(global);
+	global->work = ft_init_struct_2(global);
 }
 
-
-void	*ft_routine(void *philo_work)
+void	ft_print_philo(char *txt, t_manage *manage)
 {
-	t_work *work;
+	unsigned long long t;
 
-	work = (t_work *)philo_work;
-	//ft_eat(work);
-	//ft_sleep(work);
-	//ft_think(work);
-	ft_print_philo("test", work);
+	pthread_mutex_lock(&manage->global_back->write);
+	t = ft_get_time() - manage->global_back->time;
+	printf("%llu\tPhilosopher %d %s\n", t, manage->philo_place, txt);
+	pthread_mutex_unlock(&manage->global_back->write);
 }
 
-void	ft_init_mutex(t_global *global)
+void	ft_think(t_manage *manage)
 {
-	int	i;
+	ft_print_philo("think", manage);
+}
 
-	i = 0;
-	global->forks = malloc(sizeof(pthread_mutex_t) * global->philo);
-	while (i < global->philo)
+void	ft_eat(t_manage *manage)
+{
+	int	t;
+
+	t = manage->global_back->teat;
+	pthread_mutex_lock(&manage->global_back->forks[manage->left_fork]);
+	ft_print_philo("take left fork", manage);
+	pthread_mutex_lock(&manage->global_back->forks[manage->right_fork]);
+	ft_print_philo("take right fork", manage);
+	pthread_mutex_lock(&manage->eat);
+	ft_print_philo("eat", manage);
+	manage->last_eat = ft_get_time();
+	manage->eating = 1;
+	usleep(t * 1000);
+	while ((ft_get_time() - manage->last_eat) < t)
+		t--;
+	pthread_mutex_unlock(&manage->eat);
+	manage->eating = 0;
+}
+
+void	ft_sleep(t_manage *manage)
+{
+	int	t;
+	pthread_mutex_unlock(&manage->global_back->forks[manage->left_fork]);
+	pthread_mutex_unlock(&manage->global_back->forks[manage->right_fork]);
+	ft_print_philo("sleeps", manage);
+	t = ft_get_time();
+	usleep(manage->global_back->tsleep * 1000);
+	while ((ft_get_time() - t) < manage->global_back->tsleep)
+		t++;
+
+}
+
+void	*ft_routine(void *work)
+{
+	t_manage	*manage;
+
+	manage = (t_manage *)work;
+	while(1)
 	{
-		pthread_mutex_init(&global->forks[i], NULL);
-		i++;
+	ft_eat(manage);
+	ft_sleep(manage);
+	ft_think(manage);
 	}
+	//ft_print_philo(manage);
+	return (NULL);
 }
 
 void	ft_init_thread(t_global *global)
@@ -119,24 +170,14 @@ void	ft_init_thread(t_global *global)
 	global->time = ft_get_time();
 	pthread_mutex_init(&global->write, NULL);
 	i = 0;
-	while (i <= global->philo)
+	while (i <= global->n_philo)
 	{
-		global->philo_work[i].last_eat = ft_get_time();
-		pthread_create(&thread, NULL, &ft_routine, &global->philo_work[i]);
+		global->work[i].last_eat = ft_get_time();
+		pthread_create(&thread, NULL, &ft_routine, &global->work[i]);
 		i++;
+		usleep(100);
 	}
 }
-
-void	ft_print_philo(char *str, t_work *work)
-{
-	unsigned long long t;
-
-	(void)str;
-	//pthread_mutex_lock(&work->globalback->write);
-	//t = ft_get_time() - work->globalback->time;
-	printf("test = %llu", t);
-}
-
 
 int	main(int ac, char **av)
 {
