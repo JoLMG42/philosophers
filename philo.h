@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 15:32:37 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/03/02 16:47:45 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/03/02 19:35:02 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ typedef struct	s_manage
 	int	philo_place;
 	int	nbr_of_eat;
 	struct s_global	*global_back;
+	pthread_t	philo_thread;
 	pthread_mutex_t	eat;
 }	t_manage;
 

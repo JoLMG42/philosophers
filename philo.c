@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 15:27:43 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/03/02 18:20:53 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/03/02 19:48:49 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	 ft_check_args(int ac, char **av)
 	int	i;
 
 	i = 1;
-	if (ac != 5)// || ac != 6)
+	if (ac != 5 && ac != 6)
 		return (0);
 	while (av[i])
 	{
@@ -116,34 +116,28 @@ void	ft_think(t_manage *manage)
 
 void	ft_eat(t_manage *manage)
 {
-	int	t;
-
-	t = manage->global_back->teat;
 	pthread_mutex_lock(&manage->global_back->forks[manage->left_fork]);
 	ft_print_philo("take left fork", manage);
 	pthread_mutex_lock(&manage->global_back->forks[manage->right_fork]);
 	ft_print_philo("take right fork", manage);
-	pthread_mutex_lock(&manage->eat);
+	//pthread_mutex_lock(&manage->eat);
 	ft_print_philo("eat", manage);
+	manage->nbr_of_eat++;
+	if (manage->nbr_of_eat == manage->global_back->each_time_eat)
+		exit(0);
 	manage->last_eat = ft_get_time();
 	manage->eating = 1;
-	usleep(t * 1000);
-	while ((ft_get_time() - manage->last_eat) < t)
-		t--;
-	pthread_mutex_unlock(&manage->eat);
+	usleep(manage->global_back->teat * 1000);
+	//pthread_mutex_unlock(&manage->eat);
 	manage->eating = 0;
 }
 
 void	ft_sleep(t_manage *manage)
 {
-	int	t;
 	pthread_mutex_unlock(&manage->global_back->forks[manage->left_fork]);
 	pthread_mutex_unlock(&manage->global_back->forks[manage->right_fork]);
 	ft_print_philo("sleeps", manage);
-	t = ft_get_time();
 	usleep(manage->global_back->tsleep * 1000);
-	while ((ft_get_time() - t) < manage->global_back->tsleep)
-		t++;
 
 }
 
@@ -157,6 +151,7 @@ void	*ft_routine(void *work)
 	ft_eat(manage);
 	ft_sleep(manage);
 	ft_think(manage);
+	usleep(100);
 	}
 	//ft_print_philo(manage);
 	return (NULL);
@@ -165,18 +160,24 @@ void	*ft_routine(void *work)
 void	ft_init_thread(t_global *global)
 {
 	int	i;
-	pthread_t	thread;
 
 	global->time = ft_get_time();
 	pthread_mutex_init(&global->write, NULL);
 	i = 0;
-	while (i <= global->n_philo)
+	while (i < global->n_philo)
 	{
 		global->work[i].last_eat = ft_get_time();
-		pthread_create(&thread, NULL, &ft_routine, &global->work[i]);
+		pthread_create(&global->work[i].philo_thread, NULL, &ft_routine, &global->work[i]);
 		i++;
 		usleep(100);
 	}
+	i = 0;
+	while (i < global->n_philo)
+	{
+		pthread_join(global->work[i].philo_thread, NULL);
+		i++;
+	}
+
 }
 
 int	main(int ac, char **av)
