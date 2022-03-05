@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 15:32:37 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/03/03 18:40:33 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/03/05 18:52:00 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ typedef struct	s_manage
 	int	philo_place;
 	int	nbr_of_eat;
 	struct s_global	*global_back;
+	pthread_mutex_t	m_last_eat;
 	pthread_t	philo_thread;
 	pthread_t	philo_death;
 	pthread_mutex_t	eat;
@@ -53,6 +54,7 @@ typedef struct	s_global
 
 int	ft_atoi(const char *str);
 char	*ft_itoa(int n);
+int	ft_strncmp(const char *s1, const char *s2, size_t n);
 
 
 #endif

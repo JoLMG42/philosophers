@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 15:27:43 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/03/03 18:41:08 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/03/05 19:13:58 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void    ft_init_mutex(t_global *global)
                 return ;
         while (i < global->n_philo)
         {
+		global->work[i].last_eat = ft_get_time();
                 pthread_mutex_init(&global->forks[i], NULL);
                 i++;
         }
@@ -116,7 +117,8 @@ void	ft_print_philo(char *txt, t_manage *manage)
 	pthread_mutex_lock(&manage->global_back->write);
 	t = ft_get_time() - manage->global_back->time;
 	printf("%llu\tPhilosopher %d %s\n", t, manage->philo_place, txt);
-	pthread_mutex_unlock(&manage->global_back->write);
+	if (ft_strncmp(txt, "die", 3))
+		pthread_mutex_unlock(&manage->global_back->write);
 }
 
 void	ft_think(t_manage *manage)
@@ -126,12 +128,19 @@ void	ft_think(t_manage *manage)
 
 void	ft_eat(t_manage *manage)
 {
-	pthread_mutex_lock(&manage->global_back->forks[manage->left_fork]);
+	if (manage->global_back->n_philo % 2 != 0)
+		pthread_mutex_lock(&manage->global_back->forks[manage->left_fork]);
+	else
+		pthread_mutex_lock(&manage->global_back->forks[manage->right_fork]);
 	ft_print_philo("take left fork", manage);
-	pthread_mutex_lock(&manage->global_back->forks[manage->right_fork]);
+	if (manage->global_back->n_philo % 2 != 0)
+		pthread_mutex_lock(&manage->global_back->forks[manage->right_fork]);
+	else
+		pthread_mutex_lock(&manage->global_back->forks[manage->left_fork]);
 	ft_print_philo("take right fork", manage);
-	//pthread_mutex_lock(&manage->eat);
+	pthread_mutex_lock(&manage->eat);
 	ft_print_philo("eat", manage);
+	manage->eating = 1;
 	manage->nbr_of_eat += 1;
 	if (manage->global_back->test == 0)
 	{
@@ -143,10 +152,10 @@ void	ft_eat(t_manage *manage)
 			exit(0);
 		}
 	}
+	//pthread_mutex_lock(manage->m_last_eat);
 	manage->last_eat = ft_get_time();
-	manage->eating = 1;
 	usleep(manage->global_back->teat * 1000);
-	//pthread_mutex_unlock(&manage->eat);
+	pthread_mutex_unlock(&manage->eat);
 	manage->eating = 0;
 }
 
@@ -156,8 +165,9 @@ void	ft_sleep(t_manage *manage)
 	pthread_mutex_unlock(&manage->global_back->forks[manage->right_fork]);
 	ft_print_philo("sleeps", manage);
 	usleep(manage->global_back->tsleep * 1000);
-
 }
+
+void	ft_free(t_global *global);
 
 void	*ft_routine(void *work)
 {
@@ -171,7 +181,14 @@ void	*ft_routine(void *work)
 	ft_think(manage);
 	usleep(100);
 	}
-	//ft_print_philo(manage);
+	if (manage->global_back->value == 0)
+	{
+		pthread_mutex_lock(&manage->eat);
+		ft_print_philo("die", manage);
+		pthread_mutex_unlock(&manage->eat);
+		ft_free(manage->global_back);
+		exit(0);
+	}
 	return (NULL);
 }
 
@@ -204,8 +221,9 @@ void	ft_free(t_global *global)
 		i++;
 	}
 	free(global->forks);
+	//pthread_mutex_unlock(&global->write);
 	pthread_mutex_destroy(&global->write);
-	free(global->work);
+	//free(global->work);
 	free(global);
 }
 
@@ -227,17 +245,20 @@ void	ft_free(t_global *global)
 
 void	*ft_check_death(void *work)
 {
-	int	i;
 	t_manage	*death;
 
 	death = (t_manage *)work;
-	i = 0;
 	while (death->global_back->value)
 	{
-		if (ft_get_time() >= death->global_back->tdeath + death->last_eat)
+		if (ft_get_time() >= (death->global_back->tdeath + death->last_eat))
 		{
+
+			//pthread_mutex_lock(&death->eat);
 			death->global_back->value = 0;
-			break;
+			//ft_print_philo("die", death);
+			//pthread_mutex_unlock(&death->eat);
+			return (0);
+			//break;
 		}
 	}
 	return (NULL);
