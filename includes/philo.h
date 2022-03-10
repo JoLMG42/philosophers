@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 15:32:37 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/03/09 14:12:31 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/03/10 15:36:33 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ typedef struct	s_manage
 	int	nbr_of_eat;
 	int	release;
 	struct s_global	*global_back;
-	pthread_mutex_t	m_last_eat;
+	pthread_t	philo_a_eat;
 	pthread_t	philo_thread;
 	pthread_t	philo_death;
 	pthread_mutex_t	eat;
@@ -56,6 +56,17 @@ typedef struct	s_global
 int	ft_atoi(const char *str);
 char	*ft_itoa(int n);
 int	ft_strncmp(const char *s1, const char *s2, size_t n);
-
+unsigned long long ft_get_time(void);
+void	*ft_check_death(void *work);
+int	 ft_check_args(int ac, char **av);
+void	*ft_routine(void *work);
+void	ft_print_philo(char *txt, t_manage *manage);
+void	ft_think(t_manage *manage);
+void	ft_eat(t_manage *manage);
+void	ft_sleep(t_manage *manage);
+void	ft_init_struct(t_global *global, char **av, int ac);
+t_manage	*ft_init_struct_2(t_global *global);
+void    ft_init_mutex(t_global *global);
+void	ft_init_thread(t_global *global);
 
 #endif
