@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 15:32:37 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/03/10 15:36:33 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/03/11 19:31:09 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ typedef struct	s_manage
 	int	nbr_of_eat;
 	int	release;
 	struct s_global	*global_back;
-	pthread_t	philo_a_eat;
+	pthread_mutex_t	nbr_eat;
 	pthread_t	philo_thread;
 	pthread_t	philo_death;
 	pthread_mutex_t	eat;
@@ -49,6 +49,7 @@ typedef struct	s_global
 	int	test;
 	int	value;
 	t_manage	*work;
+	pthread_mutex_t	philo_a_eat;
 	pthread_mutex_t	write;
 	pthread_mutex_t	*forks;
 }	t_global;

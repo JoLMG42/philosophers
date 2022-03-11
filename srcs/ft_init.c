@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 15:27:27 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/03/10 15:33:18 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/03/11 19:32:24 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ t_manage	*ft_init_struct_2(t_global *global)
 		manage[i].eating = 0;
 		manage[i].nbr_of_eat = 0;
 		pthread_mutex_init(&manage[i].eat, NULL);
+		pthread_mutex_init(&manage->nbr_eat, NULL);
 		manage[i].global_back = global;
 		i++;
 	}
@@ -84,6 +85,7 @@ void	ft_init_struct(t_global *global, char **av, int ac)
 	global->tdeath = ft_atoi(av[2]);
 	global->teat = ft_atoi(av[3]);
 	global->tsleep = ft_atoi(av[4]);
+	pthread_mutex_init(&(global->philo_a_eat), NULL);
 	global->test = 1;
 	global->value = 1;
 	if (ac == 6)

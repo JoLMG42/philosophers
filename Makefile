@@ -6,7 +6,7 @@
 #    By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/10 15:20:04 by jtaravel          #+#    #+#              #
-#    Updated: 2022/03/10 16:54:48 by jtaravel         ###   ########.fr        #
+#    Updated: 2022/03/11 19:43:06 by jtaravel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,7 @@ CC =	gcc
 
 RM =	rm -f
 
-CFLAGS =	-Wall -Wextra -Werror -pthread# -fsanitize=thread
+CFLAGS =	-Wall -Wextra -Werror -pthread #-fsanitize=thread
 
 .c.o:
 		${CC} ${CFLAGS} -I${HEADERS} -c $< -o ${<:.c=.o}

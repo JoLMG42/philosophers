@@ -22,6 +22,7 @@ void	ft_free(t_global *global)
 	}
 	free(global->forks);
 	pthread_mutex_destroy(&global->write);
+	pthread_mutex_destroy(&global->philo_a_eat);
 	free(global->work);
 	free(global);
 }
