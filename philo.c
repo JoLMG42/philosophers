@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/18 14:18:09 by jtaravel          #+#    #+#             */
+/*   Updated: 2022/03/18 14:18:45 by jtaravel         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "./includes/philo.h"
 
-unsigned long long ft_get_time(void)
+unsigned long long	ft_get_time(void)
 {
-	struct	timeval time;
-	unsigned long long ms;
+	struct timeval		time;
+	unsigned long long	ms;
 
 	gettimeofday(&time, NULL);
 	ms = (time.tv_sec * 1000) + (time.tv_usec / 1000);
@@ -29,7 +41,7 @@ void	ft_free(t_global *global)
 
 int	main(int ac, char **av)
 {
-	t_global *global;
+	t_global	*global;
 
 	global = malloc(sizeof(t_global));
 	if (!ft_check_args(ac, av))

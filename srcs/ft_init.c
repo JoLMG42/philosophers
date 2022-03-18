@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 15:27:27 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/03/11 19:32:24 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/03/18 14:17:53 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 void	ft_init_thread(t_global *global)
 {
 	int	i;
-	//pthread_t death;
-	//pthread_t a_eat;
 
 	global->time = ft_get_time();
 	pthread_mutex_init(&global->write, NULL);
@@ -24,9 +22,10 @@ void	ft_init_thread(t_global *global)
 	while (i < global->n_philo)
 	{
 		global->work[i].last_eat = ft_get_time();
-		pthread_create(&global->work[i].philo_thread, NULL, &ft_routine, &global->work[i]);
-		pthread_create(&global->work[i].philo_death, NULL, &ft_check_death, &global->work[i]);
-		//pthread_create(&global->work[i].philo_a_eat, NULL, &ft_check_eat, &global->work[i]);
+		pthread_create(&global->work[i].philo_thread,
+			NULL, &ft_routine, &global->work[i]);
+		pthread_create(&global->work[i].philo_death,
+			NULL, &ft_check_death, &global->work[i]);
 		i++;
 		usleep(100);
 	}
@@ -35,31 +34,29 @@ void	ft_init_thread(t_global *global)
 	{
 		pthread_join(global->work[i].philo_thread, NULL);
 		pthread_join(global->work[i].philo_death, NULL);
-	//	pthread_join(global->work[i].philo_a_eat, NULL);
 		i++;
 	}
-
 }
 
-void    ft_init_mutex(t_global *global)
+void	ft_init_mutex(t_global *global)
 {
-        int     i;
+	int	i;
 
-        i = 0;
-        global->forks = malloc(sizeof(pthread_mutex_t) * (global->n_philo));
-        if (!global->forks)
-                return ;
-        while (i < global->n_philo)
-        {
-                pthread_mutex_init(&global->forks[i], NULL);
-                i++;
-        }
+	i = 0;
+	global->forks = malloc(sizeof(pthread_mutex_t) * (global->n_philo));
+	if (!global->forks)
+		return ;
+	while (i < global->n_philo)
+	{
+		pthread_mutex_init(&global->forks[i], NULL);
+		i++;
+	}
 }
 
 t_manage	*ft_init_struct_2(t_global *global)
 {
-	t_manage *manage;
-	int	i;
+	t_manage	*manage;
+	int			i;
 
 	i = 0;
 	manage = malloc(sizeof(t_manage) * global->n_philo);
@@ -77,7 +74,6 @@ t_manage	*ft_init_struct_2(t_global *global)
 	}
 	return (manage);
 }
-
 
 void	ft_init_struct(t_global *global, char **av, int ac)
 {
