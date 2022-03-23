@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 15:27:27 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/03/18 14:17:53 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/03/23 17:24:49 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void	ft_init_thread(t_global *global)
 		pthread_create(&global->work[i].philo_death,
 			NULL, &ft_check_death, &global->work[i]);
 		i++;
-		usleep(100);
 	}
 	i = 0;
 	while (i < global->n_philo)

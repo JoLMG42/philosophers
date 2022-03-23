@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 15:28:47 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/03/18 14:41:02 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/03/23 17:35:20 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	*ft_check_death(void *work)
 	while (value)
 	{
 		pthread_mutex_lock(&death->nbr_eat);
-		if ((ft_get_time() >= death->global_back->tdeath + death->last_eat))
+		if ((ft_get_time() > death->global_back->tdeath + death->last_eat))
 		{
 			ft_death(death);
 			break ;
