@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 15:26:27 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/03/25 17:49:19 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/05/11 18:46:00 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,14 @@ void	*ft_routine(void *work)
 	pthread_mutex_unlock(&manage->global_back->philo_a_eat);
 	while (value)
 	{
-		ft_eat(manage);
-		ft_sleep(manage);
-		ft_think(manage);
-		//usleep(100);
 		pthread_mutex_lock(&manage->global_back->philo_a_eat);
 		value = manage->global_back->value;
 		pthread_mutex_unlock(&manage->global_back->philo_a_eat);
+		ft_eat(manage);
+		ft_sleep(manage);
+		ft_think(manage);
+		if (manage->global_back->n_philo % 2 != 0)
+			usleep(100);
 	}
 	return (NULL);
 }

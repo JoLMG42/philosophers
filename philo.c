@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 14:18:09 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/03/18 14:18:45 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/05/11 17:30:32 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,13 @@ int	main(int ac, char **av)
 	{
 		printf("Error args");
 		exit(0);
+	}
+	if (ft_atoi(av[1]) == 1)
+	{
+		printf ("0 1 has taken a fork\n");
+		printf ("%d 1 died\n", ft_atoi(av[2]));
+		free(global);
+		return (0);
 	}
 	ft_init_struct(global, av, ac);
 	ft_init_mutex(global);

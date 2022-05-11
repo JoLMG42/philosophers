@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 15:27:27 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/03/23 17:24:49 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/05/11 17:18:24 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ void	ft_init_thread(t_global *global)
 	i = 0;
 	while (i < global->n_philo)
 	{
-		pthread_join(global->work[i].philo_thread, NULL);
 		pthread_join(global->work[i].philo_death, NULL);
+		pthread_join(global->work[i].philo_thread, NULL);
 		i++;
 	}
 }

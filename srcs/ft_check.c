@@ -6,17 +6,11 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 15:28:47 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/03/25 17:53:10 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/05/11 18:46:35 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-
-static int	ft_calc(t_manage *death)
-{
-	return (death->global_back->each_time_eat
-		+ death->global_back->n_philo / 2 - 1);
-}	
 
 static void	ft_death(t_manage *death)
 {
@@ -51,7 +45,7 @@ void	*ft_check_death(void *work)
 			break ;
 		}
 		else if (death->global_back->each_time_eat
-			&& death->nbr_of_eat >= ft_calc(death))
+			&& death->nbr_of_eat > death->global_back->each_time_eat)
 		{
 			ft_finish_eat(death);
 			break ;
