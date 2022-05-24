@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 15:28:47 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/05/22 19:43:32 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/05/24 12:45:48 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,10 @@ static void	ft_death(t_manage *death, int i)
 	pthread_mutex_lock(&death->global_back->philo_a_eat);
 	death->global_back->value = 0;
 	pthread_mutex_unlock(&death->global_back->philo_a_eat);
+	pthread_mutex_lock(&death->global_back->write);
 	printf("%llu %d %s\n", ft_get_time()
 		- death->global_back->time, death->philo_place, "died");
+	pthread_mutex_unlock(&death->global_back->write);
 }
 
 static void	ft_finish_eat(t_manage *death)
